@@ -59,15 +59,16 @@ function render(incidents) {
       rows.delete(id);
     }
   }
-  let before = list.firstChild;
+  // Walk the list in the API's order: new rows go in, existing rows move only if out of place.
+  let cur = list.firstChild;
   for (const i of incidents) {
     let li = rows.get(i.id);
     if (!li) {
       li = buildRow(i);
       rows.set(i.id, li);
-      list.insertBefore(li, before);
     }
-    before = li.nextSibling;
+    if (li === cur) cur = cur.nextSibling;
+    else list.insertBefore(li, cur);
   }
   empty.hidden = incidents.length > 0;
   list.hidden = incidents.length === 0;
