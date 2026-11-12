@@ -21,3 +21,7 @@ footer { color: #777; font-size: 13px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 footer code { font-family: ui-monospace, monospace; }
 [hidden] { display: none !important; }
+.bar-slot { max-width: 960px; height: 40px; margin-bottom: 6px; }
+.new-bar { width: 100%; height: 100%; font: inherit; font-weight: 600; color: #fff; background: #0a5bd3; border: 0; border-radius: 8px; cursor: pointer; }
+.new-bar:hover { background: #084bb0; }
+.new-bar.is-idle { visibility: hidden; }

@@ -50,16 +50,15 @@ async function onAck(id, slot, button) {
   }
 }
 
-// SCHED-4511 (R1): new incidents go in at the top, newest first; rows already shown stay as they are.
-function render(incidents) {
-  const ids = new Set(incidents.map((i) => i.id));
-  for (const [id, li] of rows) {
-    if (!ids.has(id)) {
-      li.remove();
-      rows.delete(id);
-    }
-  }
-  // Walk the list in the API's order: new rows go in, existing rows move only if out of place.
+// R1 (product, after step 1): the list holds still while it is on screen. New incidents wait behind the
+// "N new" bar and go in at the top only when on-call clicks it. Rows on screen never move or go away
+// on their own, so a click always lands on the row it was aimed at.
+const bar = document.querySelector('[data-testid="new-bar"]');
+let latest = []; // the API's current list, newest first
+const pending = () => latest.filter((i) => !rows.has(i.id));
+
+/** Puts the given incidents on screen in the API's order: new rows go in, existing rows move only if out of place. */
+function place(incidents) {
   let cur = list.firstChild;
   for (const i of incidents) {
     let li = rows.get(i.id);
@@ -70,9 +69,29 @@ function render(incidents) {
     if (li === cur) cur = cur.nextSibling;
     else list.insertBefore(li, cur);
   }
-  empty.hidden = incidents.length > 0;
-  list.hidden = incidents.length === 0;
 }
+
+function showState() {
+  const waiting = pending().length;
+  bar.textContent = waiting ? `${waiting} new incident${waiting === 1 ? '' : 's'} · show` : '';
+  bar.classList.toggle('is-idle', waiting === 0);
+  bar.tabIndex = waiting ? 0 : -1;
+  empty.hidden = rows.size > 0;
+  list.hidden = rows.size === 0;
+}
+
+function render(incidents) {
+  latest = incidents;
+  if (rows.size === 0) place(incidents); // nothing on screen to hold still yet
+  showState();
+}
+
+bar.addEventListener('click', () => {
+  if (!pending().length) return;
+  place([...pending(), ...[...list.children].map((li) => ({ id: li.dataset.id }))]);
+  showState();
+  window.scrollTo({ top: 0 });
+});
 
 async function refresh() {
   try {
