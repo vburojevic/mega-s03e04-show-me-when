@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="build" content="c710db68af6a468a0621c3a4364ef979b8032697" />
+    <meta name="build" content="57fde855111e6b107264658f1b59a220269d6548" />
     <title>sched-prod · incidents</title>
     <link rel="stylesheet" href="style.css" />
     <script type="module" src="app.js"></script>
@@ -18,8 +18,11 @@
         <span class="spinner" aria-hidden="true"></span> Loading incidents…
       </div>
       <p data-testid="empty" class="empty" hidden>No incidents tonight.</p>
+      <div class="bar-slot">
+        <button type="button" data-testid="new-bar" class="new-bar is-idle" aria-live="polite" tabindex="-1"></button>
+      </div>
       <ul data-testid="incident-list" class="list" hidden></ul>
     </main>
-    <footer>sched-prod incident board · build <code data-testid="build-sha">c710db68af6a468a0621c3a4364ef979b8032697</code></footer>
+    <footer>sched-prod incident board · build <code data-testid="build-sha">57fde855111e6b107264658f1b59a220269d6548</code></footer>
   </body>
 </html>
